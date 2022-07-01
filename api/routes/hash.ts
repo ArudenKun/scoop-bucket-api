@@ -3,7 +3,7 @@ import fetch from "cross-fetch";
 import crypto from "crypto"
 import fs from "fs"
 import path from "path"
-import { downloadFromUrl } from "../util/downloadFromUrl";
+import { downloadFromUrl } from "../../util/downloadFromUrl";
 
 export const hashRouter = express.Router()
 hashRouter.get("/steamless_hash", async (req, res) => {
