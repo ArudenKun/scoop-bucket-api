@@ -10,10 +10,10 @@ app.use((req, res, next) => {
     next();
 })
 
-app.use("/app", appRouter)
-app.use("/hash", hashRouter)
+app.use("/api/app", appRouter)
+app.use("/api/hash", hashRouter)
 
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
     res.status(200).send(JSON.stringify({
         message: "need to specify an action",
         help: "https://github.com/ArudenKun/scoop-bucket/tree/api",
