@@ -3,11 +3,11 @@ import fetch from "cross-fetch";
 import crypto from "crypto"
 import path from "path"
 import fs from "fs"
-import { downloadFromUrl } from "../../util/downloadFromUrl";
+import { downloadFromUrl } from "../util/downloadFromUrl";
 
 export const steamlessRouter = express.Router()
 steamlessRouter.get("/", async (req, res) => {
-    const UPSTREAM_API = "https://github.com/atom0s/Steamless/tags";
+    const UPSTREAM_API = "https://github.com/atom0s/Steamless/releases";
     const response = await fetch(UPSTREAM_API, {
         method: "GET",
         headers: {
@@ -19,25 +19,29 @@ steamlessRouter.get("/", async (req, res) => {
     const hash = crypto.createHash('sha256');
     if (response.ok) {
         const text = await response.text();
-        const Match = text.match(new RegExp(/"(\/atom0s\/Steamless\/archive\/refs\/tags\/v(?<version>\d(\.\d)+)\.zip)"/, "g"));
-        const version = Match![0].replaceAll(/(\/atom0s\/Steamless\/archive\/refs\/tags\/)|\"|v|.zip/g, "")
-        const url = `https://github.com/atom0s/Steamless/releases/download/v${version}/Steamless.v${version}.-.by.atom0s.zip`
+        const Match = text.match(new RegExp(
+            /(\/atom0s\/(?<name>.+?less)\/archive\/refs\/tags\/v(?<version>\d(\.\d)+)\.zip)/
+        ));
 
-        let fileHash;
-        try {
-            const fileName = path.basename(url)
-            await downloadFromUrl(url, "tmp")
-            const file = fs.readFileSync(`tmp/${fileName}`)
-            hash.update(file);
-            fileHash = hash.digest("hex")
-            fs.unlink(`tmp/${fileName}`, (err) => {
-                if (err) throw err
-            })
-        } catch (error) {
-            console.log(error);
-        }
+        if (Match) {
+            const url = `https://github.com/atom0s/Steamless/releases/download/v${Match[3]}/Steamless.v${Match[3]}.-.by.atom0s.zip`
+            const name = Match[2]
+            const version = Match[3]
 
-        if (text) {
+            let fileHash;
+            try {
+                const fileName = path.basename(url)
+                await downloadFromUrl(url, "tmp")
+                const file = fs.readFileSync(`tmp/${fileName}`)
+                hash.update(file);
+                fileHash = hash.digest("hex")
+                fs.unlink(`tmp/${fileName}`, (err) => {
+                    if (err) throw err
+                })
+            } catch (error) {
+                console.log(error);
+            }
+
             const fullUrl: string = `${req.protocol}://${req.get('host')}${req.originalUrl}`
             const sp = new URLSearchParams(new URL(fullUrl).search);
 
@@ -48,6 +52,7 @@ steamlessRouter.get("/", async (req, res) => {
             return res.send(
                 JSON.stringify({
                     url: url,
+                    name: name,
                     version: version,
                     sha256: fileHash
                 })

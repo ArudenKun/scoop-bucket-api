@@ -37,8 +37,8 @@ messengerRouter.get("/", async (req, res) => {
             return res.send(
                 JSON.stringify({
                     url: url,
-                    version: version,
                     name: name,
+                    version: version,
                     sha1: hash,
                 }),
             )
