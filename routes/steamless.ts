@@ -24,7 +24,7 @@ steamlessRouter.get("/", async (req, res) => {
         ));
 
         if (Match) {
-            const url = `https://github.com/atom0s/Steamless/releases/download/v${Match[3]}/Steamless.v${Match[3]}.-.by.atom0s.zip`
+            const url = `https://github.com${Match[0]}`
             const name = Match[2]
             const version = Match[3]
 

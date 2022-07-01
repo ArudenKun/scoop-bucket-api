@@ -24,7 +24,7 @@ alasRouter.get("/", async (req, res) => {
             /(\/LmeSzinc\/(?<name>.+?Script)\/releases\/download\/v(?<date>.+?)\/AlasApp_(?<version>\d(\.\d)+).7z)/
         ))
         if (Match) {
-            const url = `https://github.com/LmeSzinc/AzurLaneAutoScript/releases/download/v${Match[3]}/AlasApp_${Match[3]}.7z`
+            const url = `https://github.com${Match[0]}`
             const name = Match[2]
             const version = Match[3]
 
