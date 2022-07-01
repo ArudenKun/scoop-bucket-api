@@ -1,7 +1,7 @@
 import express from "express";
 import fetch from "cross-fetch";
 
-export const messengerRouter = express.Router()
+const messengerRouter = express.Router()
 messengerRouter.get("/", async (req, res) => {
     const UPSTREAM_API = "https://store.rg-adguard.net/api/GetFiles";
     // `9WZDNCRF0083` refers to:
@@ -51,3 +51,5 @@ messengerRouter.get("/", async (req, res) => {
         }),
     )
 })
+
+export default messengerRouter

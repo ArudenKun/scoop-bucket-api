@@ -1,6 +1,6 @@
 import express from "express";
 import { appRouter } from "./api/app/app"
-import { messengerRouter } from "./api/app/messenger";
+import messengerRouter from "./api/app/messenger";
 import { hashRouter } from "./api/hash/hash";
 
 const app = express()
