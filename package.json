@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "type": "commonjs",
+  "main": "build/index.js",
   "scripts": {
     "dev": "nodemon index.ts",
     "start": "tsc && node build/index.js"
@@ -16,5 +17,8 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.18"
+  },
+  "engines": {
+    "node": "14.x"
   }
 }

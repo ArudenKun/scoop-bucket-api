@@ -27,5 +27,4 @@ app.get("/", (req, res) => {
     }))
 })
 
-//Yeet
 app.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`))
