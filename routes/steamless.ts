@@ -20,10 +20,10 @@ steamlessRouter.get("/", async (req, res) => {
     if (response.ok) {
         const text = await response.text();
         const Match = text.match(new RegExp(
-            /(\/atom0s\/(?<name>.+?less)\/archive\/refs\/tags\/v(?<version>\d(\.\d)+)\.zip)/
+            /(\/atom0s\/(?<name>.+?less)\/releases\/download\/v(?<version>\d(\.\d)+)\/Steamless.v\d(\.\d)+.-.by.atom0s.zip)/
         ));
-
         if (Match) {
+            console.log(Match[0])
             const url = `https://github.com${Match[0]}`
             const name = Match[2]
             const version = Match[3]
