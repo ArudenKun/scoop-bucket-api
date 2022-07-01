@@ -38,6 +38,13 @@ steamlessRouter.get("/", async (req, res) => {
         }
 
         if (text) {
+            const fullUrl: string = `${req.protocol}://${req.get('host')}${req.originalUrl}`
+            const sp = new URLSearchParams(new URL(fullUrl).search);
+
+            if (sp.has("dl")) {
+                return res.redirect(302, url);
+            }
+
             return res.send(
                 JSON.stringify({
                     url: url,
