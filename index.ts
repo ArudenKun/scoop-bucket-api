@@ -1,8 +1,6 @@
 import express from "express";
-import { appRouter } from "./routes/app/app"
 import { messengerRouter } from "./routes/app/messenger";
 import { windowsTerminalRouter } from "./routes/app/windowsTerminal";
-import { hashRouter } from "./routes/hash/hash";
 import { steamlessRouter } from "./routes/hash/steamless";
 
 const app = express()
