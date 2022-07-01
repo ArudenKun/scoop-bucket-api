@@ -52,7 +52,7 @@ alasRouter.get("/", async (req, res) => {
                 JSON.stringify({
                     url: url,
                     version: version,
-                    sha256: fileHash ?? "Error",
+                    sha256: fileHash,
                 })
             )
         }
