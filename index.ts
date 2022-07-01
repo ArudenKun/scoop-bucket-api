@@ -4,7 +4,7 @@ import { windowsTerminalRouter } from "./routes/app/windowsTerminal";
 import { steamlessRouter } from "./routes/app/steamless";
 
 const app = express()
-const PORT = 3000
+const port = process.env.PORT || 3000
 
 app.use((req, res, next) => {
     res.header('Content-Type', 'application/json');
@@ -30,4 +30,4 @@ app.get("/", (req, res) => {
     }))
 })
 
-app.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`))
+app.listen(port, () => console.log(`Listening on http://localhost:${port}`))
