@@ -1,8 +1,8 @@
 import express from "express";
 import fetch from "cross-fetch";
 
-export const appRouter = express.Router()
-appRouter.get("/messenger", async (req, res) => {
+export const messengerRouter = express.Router()
+messengerRouter.get("/", async (req, res) => {
     const UPSTREAM_API = "https://store.rg-adguard.net/api/GetFiles";
     // `9WZDNCRF0083` refers to:
     // https://apps.microsoft.com/store/detail/messenger/9WZDNCRF0083?hl=en-ph&gl=ph
