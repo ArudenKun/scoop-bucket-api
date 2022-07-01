@@ -15,7 +15,7 @@ app.use("/api/app", appRouter)
 app.use("/api/app", hashRouter)
 app.use("/api/app/messenger", messengerRouter)
 
-app.get("/api", (req, res) => {
+app.get("/", (req, res) => {
     res.status(200).send(JSON.stringify({
         message: "need to specify an action",
         help: "https://github.com/ArudenKun/scoop-bucket/tree/api",
