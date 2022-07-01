@@ -1,10 +1,12 @@
-import { Request, Response } from "express";
-import { downloadFromUrl } from "../../../util/downloadFromUrl";
+import express from "express";
+import fetch from "cross-fetch";
 import crypto from "crypto"
-import path from "path"
 import fs from "fs"
+import path from "path"
+import { downloadFromUrl } from "../util/downloadFromUrl";
 
-export default async (req: Request, res: Response) => {
+export const hashRouter = express.Router()
+hashRouter.get("/steamless_hash", async (req, res) => {
     const UPSTREAM_API = "https://github.com/atom0s/Steamless/tags";
     const response = await fetch(UPSTREAM_API, {
         method: "GET",
@@ -51,4 +53,4 @@ export default async (req: Request, res: Response) => {
             message: "couldn't process your request"
         }),
     )
-}
+})
