@@ -1,6 +1,6 @@
 import express from "express";
 import { appRouter } from "./api/app/app"
-import messengerRouter from "./api/app/messenger";
+import { messengerRouter } from "./api/app/messenger";
 import { hashRouter } from "./api/hash/hash";
 
 const app = express()
@@ -13,7 +13,7 @@ app.use((req, res, next) => {
 
 app.use("/api/app", appRouter)
 app.use("/api/app", hashRouter)
-app.use("api/app/messenger", messengerRouter)
+app.use("/api/app/messenger", messengerRouter)
 
 app.get("/api", (req, res) => {
     res.status(200).send(JSON.stringify({
