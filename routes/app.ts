@@ -1,8 +1,8 @@
 import express from "express";
 import fetch from "cross-fetch";
 
-export const appsRouter = express.Router()
-appsRouter.get("/appx_messenger", async (req, res) => {
+export const appRouter = express.Router()
+appRouter.get("/appx_messenger", async (req, res) => {
     const UPSTREAM_API = "https://store.rg-adguard.net/api/GetFiles";
     // `9WZDNCRF0083` refers to:
     // https://apps.microsoft.com/store/detail/messenger/9WZDNCRF0083?hl=en-ph&gl=ph
@@ -52,7 +52,7 @@ appsRouter.get("/appx_messenger", async (req, res) => {
     )
 })
 
-appsRouter.get("/msix_windows_terminal", async (req, res) => {
+appRouter.get("/msix_windows_terminal", async (req, res) => {
     const UPSTREAM_API = "https://store.rg-adguard.net/api/GetFiles";
     // `9N0DX20HK701` refers to:
     // https://apps.microsoft.com/store/detail/windows-terminal/9N0DX20HK701?hl=en-us&gl=US

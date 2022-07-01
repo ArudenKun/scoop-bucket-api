@@ -1,5 +1,5 @@
 import express from "express";
-import { appsRouter } from "./routes/apps"
+import { appRouter } from "./routes/app"
 import { hashRouter } from "./routes/hash";
 
 const app = express()
@@ -10,7 +10,7 @@ app.use((req, res, next) => {
     next();
 })
 
-app.use("/apps", appsRouter)
+app.use("/app", appRouter)
 app.use("/hash", hashRouter)
 
 app.get("/", (req, res) => {
@@ -18,11 +18,11 @@ app.get("/", (req, res) => {
         message: "need to specify an action",
         help: "https://github.com/ArudenKun/scoop-bucket/tree/api",
         actions: [
-            "/appx_messenger",
-            "/appx_messenger?dl",
-            "/msix_windows_terminal",
-            "/msix_windows_terminal?dl",
-            "/steamless_hash"
+            "/app/appx_messenger",
+            "/app/appx_messenger?dl",
+            "/app/msix_windows_terminal",
+            "/app/msix_windows_terminal?dl",
+            "/hash/steamless_hash"
         ]
     }))
 })
