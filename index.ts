@@ -1,6 +1,6 @@
 import express from "express";
-import { appRouter } from "./app/app"
-import { hashRouter } from "./hash/hash";
+import { appRouter } from "./api/app/app"
+import { hashRouter } from "./api/hash/hash";
 
 const app = express()
 const PORT = 3000
