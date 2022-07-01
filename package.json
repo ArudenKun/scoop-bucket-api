@@ -5,7 +5,7 @@
   "type": "commonjs",
   "main": "build/index.js",
   "scripts": {
-    "dev": "nodemon index.ts",
+    "dev": "nodemon api/index.ts",
     "start": "tsc && node build/index.js",
     "serve": "ts-node index.ts"
   },
