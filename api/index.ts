@@ -32,5 +32,15 @@
 import { Request, Response } from "express";
 
 export default async (req: Request, res: Response) => {
-  res.json({ message: "Hello guys. Welcome to Vercel" });
+    res.status(200).send(JSON.stringify({
+        message: "need to specify an action",
+        help: "https://github.com/ArudenKun/scoop-bucket/tree/api",
+        actions: [
+            "/app/appx_messenger",
+            "/app/appx_messenger?dl",
+            "/app/msix_windows_terminal",
+            "/app/msix_windows_terminal?dl",
+            "/hash/steamless_hash"
+        ]
+    }))
 };
