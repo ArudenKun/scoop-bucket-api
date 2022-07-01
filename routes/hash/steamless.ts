@@ -1,12 +1,12 @@
 import express from "express";
 import fetch from "cross-fetch";
 import crypto from "crypto"
-import fs from "fs"
 import path from "path"
+import fs from "fs"
 import { downloadFromUrl } from "../../util/downloadFromUrl";
 
-export const hashRouter = express.Router()
-hashRouter.get("/steamless_hash", async (req, res) => {
+export const steamlessRouter = express.Router()
+steamlessRouter.get("/", async (req, res) => {
     const UPSTREAM_API = "https://github.com/atom0s/Steamless/tags";
     const response = await fetch(UPSTREAM_API, {
         method: "GET",

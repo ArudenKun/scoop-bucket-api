@@ -1,7 +1,9 @@
 import express from "express";
-import { appRouter } from "./api/app/app"
-import { messengerRouter } from "./api/app/messenger";
-import { hashRouter } from "./api/hash/hash";
+import { appRouter } from "./routes/app/app"
+import { messengerRouter } from "./routes/app/messenger";
+import { windowsTerminalRouter } from "./routes/app/windowsTerminal";
+import { hashRouter } from "./routes/hash/hash";
+import { steamlessRouter } from "./routes/hash/steamless";
 
 const app = express()
 const PORT = 3000
@@ -11,9 +13,9 @@ app.use((req, res, next) => {
     next();
 })
 
-app.use("/api/app", appRouter)
-app.use("/api/app", hashRouter)
-app.use("/api/app/messenger", messengerRouter)
+app.use("/app/messenger", messengerRouter)
+app.use("/app/windowsTerminal", windowsTerminalRouter)
+app.use("/hash/steamless", steamlessRouter)
 
 app.get("/", (req, res) => {
     res.status(200).send(JSON.stringify({
