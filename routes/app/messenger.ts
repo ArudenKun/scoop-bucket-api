@@ -44,7 +44,7 @@ messengerRouter.get("/", async (req, res) => {
             )
         }
     }
-
+    //test
     return res.status(500).send(
         JSON.stringify({
             message: "couldn't process your request"
