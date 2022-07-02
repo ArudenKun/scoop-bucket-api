@@ -21,12 +21,12 @@ alasRouter.get("/", async (req, res) => {
     if (response.ok) {
         const text = await response.text();
         const Match = text.match(new RegExp(
-            /(\/LmeSzinc\/(?<name>.+?Script)\/releases\/download\/v(?<date>.+?)\/AlasApp_(?<version>\d(\.\d)+).7z)/
+            /(\/LmeSzinc\/AzurLaneAutoScript\/releases\/download\/v(?<date>.+?)\/(?<name>A.+?(?<version>[\d.]+).7z))/
         ))
         if (Match) {
             const url = `https://github.com${Match[0]}`
-            const name = Match[2]
-            const version = Match[3]
+            const name = Match[3]
+            const version = Match[4]
 
             let fileHash;
             try {
@@ -51,6 +51,7 @@ alasRouter.get("/", async (req, res) => {
             return res.send(
                 JSON.stringify({
                     url: url,
+                    name: name,
                     version: version,
                     sha256: fileHash,
                 })

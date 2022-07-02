@@ -19,12 +19,14 @@ app.get("/", (req, res) => {
         message: "need to specify an action",
         help: "https://github.com/ArudenKun/scoop-bucket/tree/api",
         apps: [
+            "/alas",
+            "/alas?dl",
             "/messenger",
             "/messenger?dl",
+            "/steamless",
+            "/steamless?dl",
             "/windows_terminal",
             "/windows_terminal?dl",
-            "/steamless",
-            "/steamless?dl"
         ]
     }))
 })
