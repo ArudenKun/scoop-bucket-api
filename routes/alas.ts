@@ -1,25 +1,17 @@
-import { downloadFromUrl } from "../util/downloadFromUrl";
+import { getHash } from "../util/getHash";
 import express from "express";
-import fetch from "cross-fetch";
 import path from "path"
-import fs from "fs"
-import { hasher } from "../deps";
+import got from "got";
+import { hashes } from "../deps";
+import { writeHash } from "../util/writeHash";
 
 export const alasRouter = express.Router()
 alasRouter.get("/", async (req, res) => {
     const UPSTREAM_API = "https://github.com/LmeSzinc/AzurLaneAutoScript/releases/latest";
-    const response = await fetch(UPSTREAM_API, {
-        method: "GET",
-        headers: {
-            "user-agent": "Deno/1.0 (Deno Deploy) Scoop/1.0 (https://scoop.sh)",
-            "content-type": "application/x-www-form-urlencoded",
-            "accept-encoding": "gzip, deflate, br",
-        },
-    });
+    const response = got(UPSTREAM_API)
 
-
-    if (response.ok) {
-        const text = await response.text();
+    if (response) {
+        const text = await response.text()
         const Match = text.match(new RegExp(
             /(\/LmeSzinc\/AzurLaneAutoScript\/releases\/download\/v(?<date>.+?)\/AlasApp_(?<version>[\d.]+).7z)/
         ))
@@ -29,30 +21,13 @@ alasRouter.get("/", async (req, res) => {
             const version = Match[3]
             let hash;
 
-            const jsonData = fs.readFileSync("./hashTable.json", "utf-8")
-            const data = JSON.parse(jsonData)
-
-            if (data.alas.version == version) {
-                hash = data.alas.hash
+            if (hashes.alas.version == version) {
+                hash = hashes.alas.hash
             } else {
-                try {
-                    await downloadFromUrl(url, "tmp")
-                    const file = fs.readFileSync(`tmp/${name}`)
-                    hasher.update(file);
-                    hash = hasher.digest("hex")
-                    fs.unlink(`tmp/${name}`, (err) => {
-                        if (err) throw err
-                    })
-                    data.alas.hash = hash
-                    data.alas.version = version
-                    fs.writeFile("./hashTable.json", JSON.stringify(data), err => {
-                        if (err) {
-                            console.log(err)
-                        }
-                    })
-                } catch (error) {
-                    console.log(error);
-                }
+                hash = await getHash(url)
+                hashes.alas.version = version
+                hashes.alas.hash = hash
+                await writeHash(hashes)
             }
 
             const fullUrl: string = `${req.protocol}://${req.get('host')}${req.originalUrl}`

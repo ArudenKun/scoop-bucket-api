@@ -1,9 +1,9 @@
-import { downloadFromUrl } from "../util/downloadFromUrl";
 import express from "express";
 import fetch from "cross-fetch";
 import path from "path"
-import fs from "fs"
-import { hasher } from "../deps";
+import { hashes } from "../deps";
+import { getHash } from "../util/getHash";
+import { writeHash } from "../util/writeHash";
 
 export const noxPlayerRouter = express.Router()
 noxPlayerRouter.get("/", async (req, res) => {
@@ -23,69 +23,31 @@ noxPlayerRouter.get("/", async (req, res) => {
             /Version (?<version>[\d.]+)/
         ));
         if (text) {
-            const origUrl = `https://www.bignox.com/en/download/fullPackage?beta`
-            const origName = path.basename(origUrl)
+            const url = `https://www.bignox.com/en/download/fullPackage?beta`
+            const name = path.basename(url)
             const version = versionMatch![1]
             let hash;
-            let newName;
 
-            const jsonData = fs.readFileSync("./hashTable.json", "utf-8")
-            const data = JSON.parse(jsonData)
-
-            if (data.noxplayer.version == version) {
-                hash = data.noxplayer.hash
+            if (hashes.noxplayer.version == version) {
+                hash = hashes.noxplayer.hash
             } else {
-                try {
-
-                    const response = await fetch(origUrl, {
-                        method: "GET",
-                        headers: {
-                            "user-agent": "Deno/1.0 (Deno Deploy) Scoop/1.0 (https://scoop.sh)",
-                            "content-type": "application/x-www-form-urlencoded",
-                        },
-                    })
-
-                    if (!response.ok) {
-                        return res.status(500).send(
-                            JSON.stringify({
-                                message: "couldn't process your request"
-                            }),
-                        )
-                    }
-
-                    const newUrl = response.url
-                    newName = path.basename(newUrl)
-                    console.log(newUrl)
-                    await downloadFromUrl(newUrl, "tmp")
-                    const file = fs.readFileSync(`tmp/${newName}`)
-                    hasher.update(file);
-                    hash = hasher.digest("hex")
-                    fs.unlink(`tmp/${newName}`, (err) => {
-                        if (err) throw err
-                    })
-                    data.noxplayer.hash = hash
-                    data.noxplayer.version = version
-                    fs.writeFile("./hashTable.json", JSON.stringify(data), err => {
-                        if (err) {
-                            console.log(err)
-                        }
-                    })
-                } catch (error) {
-                    console.log(error);
-                }
+                hash = await getHash("https://www.bignox.com/en/download/fullPackage?beta")
+                hashes.noxplayer.version = version
+                hashes.noxplayer.hash = hash
+                await writeHash(hashes)
             }
 
             const fullUrl: string = `${req.protocol}://${req.get('host')}${req.originalUrl}`
             const sp = new URLSearchParams(new URL(fullUrl).search);
 
             if (sp.has("dl")) {
-                return res.redirect(302, origUrl);
+                return res.redirect(302, url);
             }
 
             return res.send(
                 JSON.stringify({
-                    url: origUrl,
-                    name: newName,
+                    url: url,
+                    name: name,
                     version: version,
                     sha256: hash
                 })

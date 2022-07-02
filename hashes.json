@@ -1,0 +1,14 @@
+{
+    "alas": {
+        "version": "0.3.7",
+        "hash": "79d8f2bf177888c039b9fd992b3fbf0cdbb63db93793c0d557bb3a12f0639f62"
+    },
+    "steamless": {
+        "version": "3.1.0.0",
+        "hash": "4da2b9519a32da67957449eb55edb8d442395ff548638639e9d62cbaac0da938"
+    },
+    "noxplayer": {
+        "version": "7.0.3.1",
+        "hash": "c511037036d4be1993a9d48be49245ef3f158f0ffb2a15ad3e8c50056c40a580"
+    }
+}
