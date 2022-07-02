@@ -16,7 +16,7 @@ steamlessRouter.get("/", async (req, res) => {
             "accept-encoding": "gzip, deflate, br",
         },
     });
-    const hash = crypto.createHash('sha256');
+
     if (response.ok) {
         const text = await response.text();
         const Match = text.match(new RegExp(
@@ -24,12 +24,13 @@ steamlessRouter.get("/", async (req, res) => {
         ));
         if (Match) {
             const url = `https://github.com${Match[0]}`
+            const fileName = path.basename(url)
             const name = Match[4]
             const version = Match[2]
+            const hash = crypto.createHash('sha256');
 
             let fileHash;
             try {
-                const fileName = path.basename(url)
                 await downloadFromUrl(url, "tmp")
                 const file = fs.readFileSync(`tmp/${fileName}`)
                 hash.update(file);
