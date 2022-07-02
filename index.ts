@@ -1,5 +1,11 @@
 import express from "express";
-import { alasRouter, messengerRouter, steamlessRouter, windowsTerminalRouter } from "./deps"
+import {
+    alasRouter,
+    messengerRouter,
+    noxPlayerRouter,
+    steamlessRouter,
+    windowsTerminalRouter
+} from "./deps"
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -11,8 +17,9 @@ app.use((req, res, next) => {
 
 app.use("/alas", alasRouter)
 app.use("/messenger", messengerRouter)
-app.use("/windows_terminal", windowsTerminalRouter)
+app.use("/noxplayer", noxPlayerRouter)
 app.use("/steamless", steamlessRouter)
+app.use("/windows_terminal", windowsTerminalRouter)
 
 app.get("/", (req, res) => {
     res.status(200).send(JSON.stringify({
@@ -23,6 +30,8 @@ app.get("/", (req, res) => {
             "/alas?dl",
             "/messenger",
             "/messenger?dl",
+            "/noxplayer (Broken)",
+            "/noxplayer?dl (Broken)",
             "/steamless",
             "/steamless?dl",
             "/windows_terminal",

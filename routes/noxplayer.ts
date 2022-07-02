@@ -5,9 +5,9 @@ import path from "path"
 import fs from "fs"
 import { hasher } from "../deps";
 
-export const steamlessRouter = express.Router()
-steamlessRouter.get("/", async (req, res) => {
-    const UPSTREAM_API = "https://github.com/atom0s/Steamless/releases";
+export const noxPlayerRouter = express.Router()
+noxPlayerRouter.get("/", async (req, res) => {
+    const UPSTREAM_API = "https://www.bignox.com/";
     const response = await fetch(UPSTREAM_API, {
         method: "GET",
         headers: {
@@ -19,32 +19,52 @@ steamlessRouter.get("/", async (req, res) => {
 
     if (response.ok) {
         const text = await response.text();
-        const Match = text.match(new RegExp(
-            /(\/atom0s\/Steamless\/releases\/download\/v(?<version>[\d.]+)\/Steamless.v[\d.]+.-.by.atom0s.zip)/
+        const versionMatch = text.match(new RegExp(
+            /Version (?<version>[\d.]+)/
         ));
-        if (Match) {
-            const url = `https://github.com${Match[0]}`
-            const fileName = path.basename(url)
-            const name = fileName
-            const version = Match[2]
+        if (text) {
+            const origUrl = `https://www.bignox.com/en/download/fullPackage?beta`
+            const origName = path.basename(origUrl)
+            const version = versionMatch![1]
             let hash;
+            let newName;
 
             const jsonData = fs.readFileSync("./hashTable.json", "utf-8")
             const data = JSON.parse(jsonData)
 
-            if (data.steamless.version == version) {
-                hash = data.steamless.hash
+            if (data.noxplayer.version == version) {
+                hash = data.noxplayer.hash
             } else {
                 try {
-                    await downloadFromUrl(url, "tmp")
-                    const file = fs.readFileSync(`tmp/${fileName}`)
+
+                    const response = await fetch(origUrl, {
+                        method: "GET",
+                        headers: {
+                            "user-agent": "Deno/1.0 (Deno Deploy) Scoop/1.0 (https://scoop.sh)",
+                            "content-type": "application/x-www-form-urlencoded",
+                        },
+                    })
+
+                    if (!response.ok) {
+                        return res.status(500).send(
+                            JSON.stringify({
+                                message: "couldn't process your request"
+                            }),
+                        )
+                    }
+
+                    const newUrl = response.url
+                    newName = path.basename(newUrl)
+                    console.log(newUrl)
+                    await downloadFromUrl(newUrl, "tmp")
+                    const file = fs.readFileSync(`tmp/${newName}`)
                     hasher.update(file);
                     hash = hasher.digest("hex")
-                    fs.unlink(`tmp/${fileName}`, (err) => {
+                    fs.unlink(`tmp/${newName}`, (err) => {
                         if (err) throw err
                     })
-                    data.steamless.hash = hash
-                    data.steamless.version = version
+                    data.noxplayer.hash = hash
+                    data.noxplayer.version = version
                     fs.writeFile("./hashTable.json", JSON.stringify(data), err => {
                         if (err) {
                             console.log(err)
@@ -59,13 +79,13 @@ steamlessRouter.get("/", async (req, res) => {
             const sp = new URLSearchParams(new URL(fullUrl).search);
 
             if (sp.has("dl")) {
-                return res.redirect(302, url);
+                return res.redirect(302, origUrl);
             }
 
             return res.send(
                 JSON.stringify({
-                    url: url,
-                    name: name,
+                    url: origUrl,
+                    name: newName,
                     version: version,
                     sha256: hash
                 })

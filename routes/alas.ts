@@ -1,10 +1,9 @@
 import { downloadFromUrl } from "../util/downloadFromUrl";
 import express from "express";
 import fetch from "cross-fetch";
-import crypto from "crypto"
 import path from "path"
 import fs from "fs"
-import hashTable from "../hashTable.json"
+import { hasher } from "../deps";
 
 export const alasRouter = express.Router()
 alasRouter.get("/", async (req, res) => {
@@ -22,31 +21,29 @@ alasRouter.get("/", async (req, res) => {
     if (response.ok) {
         const text = await response.text();
         const Match = text.match(new RegExp(
-            /(\/LmeSzinc\/AzurLaneAutoScript\/releases\/download\/v(?<date>.+?)\/(?<name>A.+?(?<version>[\d.]+).7z))/
+            /(\/LmeSzinc\/AzurLaneAutoScript\/releases\/download\/v(?<date>.+?)\/AlasApp_(?<version>[\d.]+).7z)/
         ))
         if (Match) {
             const url = `https://github.com${Match[0]}`
-            const fileName = path.basename(url)
-            const name = Match[3]
-            const version = Match[4]
-            const hash = crypto.createHash('sha256');
-            let fileHash;
+            const name = path.basename(url)
+            const version = Match[3]
+            let hash;
 
             const jsonData = fs.readFileSync("./hashTable.json", "utf-8")
             const data = JSON.parse(jsonData)
 
             if (data.alas.version == version) {
-                fileHash = data.alas.hash
+                hash = data.alas.hash
             } else {
                 try {
                     await downloadFromUrl(url, "tmp")
-                    const file = fs.readFileSync(`tmp/${fileName}`)
-                    hash.update(file);
-                    fileHash = hash.digest("hex")
-                    fs.unlink(`tmp/${fileName}`, (err) => {
+                    const file = fs.readFileSync(`tmp/${name}`)
+                    hasher.update(file);
+                    hash = hasher.digest("hex")
+                    fs.unlink(`tmp/${name}`, (err) => {
                         if (err) throw err
                     })
-                    data.alas.hash = fileHash
+                    data.alas.hash = hash
                     data.alas.version = version
                     fs.writeFile("./hashTable.json", JSON.stringify(data), err => {
                         if (err) {
@@ -70,7 +67,7 @@ alasRouter.get("/", async (req, res) => {
                     url: url,
                     name: name,
                     version: version,
-                    sha256: fileHash,
+                    sha256: hash,
                 })
             )
         }
