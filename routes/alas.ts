@@ -1,9 +1,10 @@
+import { downloadFromUrl } from "../util/downloadFromUrl";
 import express from "express";
 import fetch from "cross-fetch";
 import crypto from "crypto"
 import path from "path"
 import fs from "fs"
-import { downloadFromUrl } from "../util/downloadFromUrl";
+import hashTable from "../hashTable.json"
 
 export const alasRouter = express.Router()
 alasRouter.get("/", async (req, res) => {
@@ -17,7 +18,7 @@ alasRouter.get("/", async (req, res) => {
         },
     });
 
-    
+
     if (response.ok) {
         const text = await response.text();
         const Match = text.match(new RegExp(
@@ -29,19 +30,34 @@ alasRouter.get("/", async (req, res) => {
             const name = Match[3]
             const version = Match[4]
             const hash = crypto.createHash('sha256');
-
             let fileHash;
-            try {
-                await downloadFromUrl(url, "tmp")
-                const file = fs.readFileSync(`tmp/${fileName}`)
-                hash.update(file);
-                fileHash = hash.digest("hex")
-                fs.unlink(`tmp/${fileName}`, (err) => {
-                    if (err) throw err
-                })
-            } catch (error) {
-                console.log(error);
+
+            const jsonData = fs.readFileSync("./hashTable.json", "utf-8")
+            const data = JSON.parse(jsonData)
+
+            if (data.alas.version == version) {
+                fileHash = data.alas.hash
+            } else {
+                try {
+                    await downloadFromUrl(url, "tmp")
+                    const file = fs.readFileSync(`tmp/${fileName}`)
+                    hash.update(file);
+                    fileHash = hash.digest("hex")
+                    fs.unlink(`tmp/${fileName}`, (err) => {
+                        if (err) throw err
+                    })
+                    data.alas.hash = fileHash
+                    data.alas.version = version
+                    fs.writeFile("./hashTable.json", JSON.stringify(data), err => {
+                        if (err) {
+                            console.log(err)
+                        }
+                    })
+                } catch (error) {
+                    console.log(error);
+                }
             }
+
             const fullUrl: string = `${req.protocol}://${req.get('host')}${req.originalUrl}`
             const sp = new URLSearchParams(new URL(fullUrl).search);
 
