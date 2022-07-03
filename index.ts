@@ -1,4 +1,6 @@
 import express from "express";
+import mongoose from "mongoose";
+import "dotenv/config"
 import {
     alasRouter,
     messengerRouter,
@@ -6,6 +8,7 @@ import {
     steamlessRouter,
     windowsTerminalRouter
 } from "./deps"
+import { log } from "./util/logger";
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -40,4 +43,14 @@ app.get("/", (req, res) => {
     }))
 })
 
-app.listen(port, () => console.log(`Listening on http://localhost:${port}`))
+app.listen(port, async () => {
+    log.info(`Listening on http://localhost:${port}`)
+    if (!process.env.MONGO_URI) return;
+    await mongoose.connect(process.env.MONGO_URI, { keepAlive: true })
+        .then(() => {
+            log.info("Client is now connected to the database");
+        })
+        .catch((err) => {
+            log.error(err);
+        });
+})

@@ -1,9 +1,7 @@
 import express from "express";
 import fetch from "cross-fetch";
 import path from "path"
-import { hashes } from "../deps";
 import { getHash } from "../util/getHash";
-import { writeHash } from "../util/writeHash";
 
 export const noxPlayerRouter = express.Router()
 noxPlayerRouter.get("/", async (req, res) => {
@@ -13,7 +11,6 @@ noxPlayerRouter.get("/", async (req, res) => {
         headers: {
             "user-agent": "Deno/1.0 (Deno Deploy) Scoop/1.0 (https://scoop.sh)",
             "content-type": "application/x-www-form-urlencoded",
-            "accept-encoding": "gzip, deflate, br",
         },
     });
 
@@ -24,18 +21,18 @@ noxPlayerRouter.get("/", async (req, res) => {
         ));
         if (text) {
             const url = `https://www.bignox.com/en/download/fullPackage?beta`
-            const name = path.basename(url)
+            const name = path.basename((await fetch(url)).url).match(/nox_setup_.+?.exe/)![0]
             const version = versionMatch![1]
-            let hash;
+            const hash = await getHash(url, name, version);
 
-            if (hashes.noxplayer.version == version) {
-                hash = hashes.noxplayer.hash
-            } else {
-                hash = await getHash("https://www.bignox.com/en/download/fullPackage?beta")
-                hashes.noxplayer.version = version
-                hashes.noxplayer.hash = hash
-                await writeHash(hashes)
-            }
+            // if (hashes.noxplayer.version == version) {
+            //     hash = hashes.noxplayer.hash
+            // } else {
+            //     hash = await getHash("https://www.bignox.com/en/download/fullPackage?beta")
+            //     hashes.noxplayer.version = version
+            //     hashes.noxplayer.hash = hash
+            //     await writeHash(hashes)
+            // }
 
             const fullUrl: string = `${req.protocol}://${req.get('host')}${req.originalUrl}`
             const sp = new URLSearchParams(new URL(fullUrl).search);
