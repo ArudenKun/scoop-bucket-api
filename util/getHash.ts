@@ -1,7 +1,7 @@
 import got from 'got';
 import hasha from "hasha"
 import { HashesDB } from "../model/hashes"
-// import { log } from './logger';
+import { log } from './logger';
 
 export async function getHash(url: string, name: string, version: string) {
 
@@ -32,7 +32,7 @@ export async function getHash(url: string, name: string, version: string) {
         }
         return data.Hash
     } catch (error) {
-        console.error(error)
+        log.error(error)
     }
 }
 

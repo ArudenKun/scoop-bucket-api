@@ -8,7 +8,7 @@ import {
     steamlessRouter,
     windowsTerminalRouter
 } from "./deps"
-// import { log } from "./util/logger";
+import { log } from "./util/logger";
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -44,13 +44,13 @@ app.get("/", (req, res) => {
 })
 
 app.listen(port, async () => {
-    console.info(`Listening on http://localhost:${port}`)
+    log.info(`Listening on http://localhost:${port}`)
     if (!process.env.MONGODB_URI) return;
     await mongoose.connect(process.env.MONGODB_URI, { keepAlive: true })
         .then(() => {
-            console.info("Client is now connected to the database");
+            log.info("Client is now connected to the database");
         })
         .catch((err) => {
-            console.error(err);
+            log.error(err);
         });
 })

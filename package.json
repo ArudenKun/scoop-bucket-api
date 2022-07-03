@@ -20,7 +20,7 @@
     "express": "^4.18.1",
     "got": "11.8.3",
     "hasha": "^5.2.2",
-    "mongoose": "^6.3.5",
+    "mongoose": "^6.4.2",
     "pino": "^8.1.0",
     "pino-pretty": "^8.1.0",
     "typescript": "^4.7.4"
