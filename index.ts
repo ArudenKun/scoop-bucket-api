@@ -45,8 +45,8 @@ app.get("/", (req, res) => {
 
 app.listen(port, async () => {
     console.info(`Listening on http://localhost:${port}`)
-    if (!process.env.MONGO_URI) return;
-    await mongoose.connect(process.env.MONGO_URI, { keepAlive: true })
+    if (!process.env.MONGODB_URI) return;
+    await mongoose.connect(process.env.MONGODB_URI, { keepAlive: true })
         .then(() => {
             console.info("Client is now connected to the database");
         })
